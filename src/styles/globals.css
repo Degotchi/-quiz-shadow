@@ -1,0 +1,53 @@
+:root {
+  --void-black: #0A0A0F;
+  --toxic-green: #39FF14;
+  --warning-yellow: #FFFF00;
+  --cyber-purple: #8A2BE2;
+  --danger-red: #FF003C;
+  --cold-gray: #1A1A2E;
+  --cold-gray-light: #2A2A3E;
+  --cold-blue: #00D4FF;
+  --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Menlo', 'Consolas', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Segoe UI', sans-serif;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--void-black);
+  color: #fff;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+::selection {
+  background: rgba(57, 255, 20, 0.3);
+  color: var(--toxic-green);
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--void-black);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(57, 255, 20, 0.2);
+  border-radius: 2px;
+}
+
+a { color: var(--toxic-green); text-decoration: none; }
+button { cursor: pointer; font-family: inherit; }
