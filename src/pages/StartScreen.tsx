@@ -4,7 +4,7 @@ import styles from './StartScreen.module.css';
 
 const TERMINAL_MESSAGES = [
   '> 正在扫描神经链路...',
-  '> 检测到人格面具覆盖率 97.3%',
+  '> 检测到人格面具覆盖率 97.8%',
   '> 阴影信号源已锁定...',
   '> 准备启动深层扫描协议',
 ];
