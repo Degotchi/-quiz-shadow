@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       # 3. 安装依赖
       - name: Install Dependencies
@@ -66,19 +66,19 @@ jobs:
           port: 22
           script: |
             cd /root/degotchi/shadow_app
-            
+
             # 安装后端依赖
             npm install --production
-            
+
             # 重启 PM2 服务
             pm2 restart shadow-backend || pm2 start ecosystem.config.cjs
-            
+
             # 保存 PM2 配置
             pm2 save
-            
+
             # 重新加载 Nginx Docker 容器
             cd /root/degotchi && docker compose exec -T nginx nginx -s reload
-            
+
             # 显示服务状态
             pm2 list
             echo "✅ Deployment completed successfully!"
