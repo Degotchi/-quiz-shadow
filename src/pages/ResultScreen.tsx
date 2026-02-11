@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { type ScoreResult } from '../utils/scoring';
 import RadarChart from '../components/RadarChart';
-import { POETIC_DIMENSIONS } from '../data/archetypes';
 import styles from './ResultScreen.module.css';
 
 export default function ResultScreen() {
