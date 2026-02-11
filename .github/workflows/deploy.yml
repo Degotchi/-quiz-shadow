@@ -76,13 +76,8 @@ jobs:
             # 保存 PM2 配置
             pm2 save
             
-            # 重新加载 Nginx (如果使用 Docker)
-            if [ -f /root/degotchi/docker-compose.yml ]; then
-              cd /root/degotchi && docker compose exec -T nginx nginx -s reload
-            else
-              # 如果直接安装的 Nginx
-              nginx -t && systemctl reload nginx
-            fi
+            # 重新加载 Nginx Docker 容器
+            cd /root/degotchi && docker compose exec -T nginx nginx -s reload
             
             # 显示服务状态
             pm2 list
