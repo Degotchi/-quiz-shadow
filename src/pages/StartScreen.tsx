@@ -64,7 +64,7 @@ export default function StartScreen() {
 
   return (
     <div className={styles.container}>
-      {/* Background gradient pulse */}
+      {/* Mesh gradient background */}
       <div className={styles.bgGradient} />
 
       {/* SVG noise grain overlay */}
@@ -84,6 +84,9 @@ export default function StartScreen() {
 
       {/* CRT scanline overlay */}
       <div className={styles.scanlineOverlay} />
+
+      {/* Breathing border */}
+      <div className={styles.breathingBorder} />
 
       {/* ── Main content ── */}
       <div className={styles.content}>

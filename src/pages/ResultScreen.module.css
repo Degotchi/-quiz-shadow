@@ -1,57 +1,112 @@
 /* ═══════════════════════════════════════════════
    ResultScreen – 结果展示页
-   Cyberpunk / Card Layout / Data Vis
+   Mesh Gradient + Glassmorphism + Data Vis
    ═══════════════════════════════════════════════ */
 
 .container {
     width: 100%;
     min-height: 100vh;
     min-height: 100dvh;
-    background: #0A0A0F;
+    background: #06060C;
     color: #fff;
     overflow-x: hidden;
     position: relative;
     padding-bottom: 60px;
 }
 
+/* ── Mesh gradient background ── */
+.bgMesh {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 70% 50% at 25% 20%, rgba(138, 43, 226, 0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 75% 80%, rgba(160, 20, 50, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(57, 255, 20, 0.02) 0%, transparent 40%);
+    background-size: 200% 200%;
+    animation: meshSlow 30s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes meshSlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
 /* ── Hero / Sync Rate ── */
 .heroSection {
-    padding: 40px 24px 20px;
+    padding: 48px 24px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .syncRateLabel {
     font-family: var(--font-mono);
-    font-size: 12px;
-    color: rgba(57, 255, 20, 0.7);
-    letter-spacing: 2px;
-    margin-bottom: 8px;
+    font-size: 11px;
+    color: rgba(138, 43, 226, 0.6);
+    letter-spacing: 3px;
+    margin-bottom: 12px;
 }
 
 .syncRateValue {
     font-family: var(--font-mono);
-    font-size: 64px;
+    font-size: 72px;
     font-weight: 700;
-    color: #39FF14;
-    text-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+    color: #fff;
+    text-shadow:
+        0 0 30px rgba(138, 43, 226, 0.5),
+        0 0 60px rgba(138, 43, 226, 0.2);
     line-height: 1;
+    animation: syncPulse 3s ease-in-out infinite;
+}
+
+@keyframes syncPulse {
+    0%, 100% {
+        text-shadow:
+            0 0 20px rgba(138, 43, 226, 0.4),
+            0 0 40px rgba(138, 43, 226, 0.15);
+    }
+    50% {
+        text-shadow:
+            0 0 40px rgba(138, 43, 226, 0.6),
+            0 0 80px rgba(138, 43, 226, 0.25);
+    }
 }
 
 .syncRateUnit {
-    font-size: 24px;
-    opacity: 0.8;
+    font-size: 28px;
+    opacity: 0.7;
 }
 
-/* ── Archetype Card ── */
+/* ── Archetype Card (Glassmorphism) ── */
 .archetypeCard {
-    margin: 20px 24px;
-    padding: 32px 24px;
+    margin: 16px 20px;
+    padding: 28px 22px;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(138, 43, 226, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(138, 43, 226, 0.15);
+    border-radius: 10px;
     position: relative;
+    z-index: 1;
+    animation: cardBreathe 4s ease-in-out infinite;
+}
+
+@keyframes cardBreathe {
+    0%, 100% {
+        box-shadow:
+            0 0 20px rgba(138, 43, 226, 0.05),
+            inset 0 0 20px rgba(138, 43, 226, 0.02);
+    }
+    50% {
+        box-shadow:
+            0 0 35px rgba(138, 43, 226, 0.1),
+            inset 0 0 35px rgba(138, 43, 226, 0.04);
+    }
 }
 
 .cardDecoration {
@@ -59,31 +114,31 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #8A2BE2, transparent);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.4), transparent);
 }
 
 .archetypeNameCN {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 900;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: 2px;
-    text-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+    text-shadow: 0 0 15px rgba(138, 43, 226, 0.3);
 }
 
 .archetypeNameEN {
     font-family: var(--font-mono);
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
     display: block;
 }
 
 .sectionTitle {
-    font-size: 14px;
-    color: #39FF14;
+    font-size: 13px;
+    color: rgba(138, 43, 226, 0.8);
     margin-bottom: 8px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -95,54 +150,165 @@
 .sectionTitle::before {
     content: '';
     display: block;
-    width: 4px;
-    height: 14px;
-    background: #39FF14;
+    width: 3px;
+    height: 13px;
+    background: #8A2BE2;
+    border-radius: 1px;
+    box-shadow: 0 0 6px rgba(138, 43, 226, 0.5);
 }
 
 .descriptionText {
     font-size: 15px;
-    line-height: 1.7;
-    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.85);
     margin-bottom: 24px;
+}
+
+/* ── Warning cards (Double Shadow, Chaos, Barrier) ── */
+.warningCard {
+    margin: 16px 20px;
+    padding: 24px 22px;
+    background: rgba(255, 0, 60, 0.04);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 0, 60, 0.2);
+    border-radius: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.warningTitle {
+    font-size: 13px;
+    color: rgba(255, 0, 60, 0.8);
+    margin-bottom: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* ── Shadow Diary (AI Generated) ── */
+.shadowDiary {
+    margin: 24px 20px;
+    padding: 24px;
+    background: rgba(139, 0, 0, 0.08); /* 暗红背景 */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(139, 0, 0, 0.3);
+    border-radius: 10px;
+    position: relative;
+    z-index: 1;
+    animation: diaryBreathe 5s ease-in-out infinite;
+}
+
+@keyframes diaryBreathe {
+    0%, 100% {
+        box-shadow:
+            0 0 20px rgba(139, 0, 0, 0.1),
+            inset 0 0 20px rgba(139, 0, 0, 0.05);
+    }
+    50% {
+        box-shadow:
+            0 0 35px rgba(139, 0, 0, 0.2),
+            inset 0 0 35px rgba(139, 0, 0, 0.08);
+    }
+}
+
+.diaryHeader {
+    font-size: 12px;
+    color: rgba(255, 100, 100, 0.7);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+}
+
+.diaryIcon {
+    display: inline-block;
+    margin-right: 8px;
+    animation: rotateIcon 4s linear infinite;
+}
+
+@keyframes rotateIcon {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.diaryContent {
+    font-size: 15px;
+    line-height: 1.85;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: justify;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+.diaryFooter {
+    margin-top: 16px;
+    font-size: 10px;
+    color: rgba(255, 100, 100, 0.4);
+    font-family: var(--font-mono);
+    text-align: right;
 }
 
 /* ── Radar Chart Section ── */
 .chartSection {
     display: flex;
     justify-content: center;
-    margin: 40px 0;
+    margin: 32px 0;
+    position: relative;
+    z-index: 1;
 }
 
 /* ── Action Buttons ── */
 .actionArea {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 0 24px;
-    margin-top: 40px;
+    gap: 12px;
+    padding: 0 20px;
+    margin-top: 36px;
+    position: relative;
+    z-index: 1;
 }
 
 .primaryButton {
-    /* Inherits some from global but customize here */
     width: 100%;
     padding: 16px;
-    background: rgba(57, 255, 20, 0.1);
-    border: 1px solid #39FF14;
-    color: #39FF14;
+    background: rgba(138, 43, 226, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(138, 43, 226, 0.35);
+    border-radius: 6px;
+    color: #fff;
     font-weight: 700;
+    font-size: 15px;
     letter-spacing: 2px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
+    transition: all 0.3s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.primaryButton:active {
+    transform: scale(0.98);
+    background: rgba(138, 43, 226, 0.2);
 }
 
 .secondaryButton {
     width: 100%;
-    padding: 16px;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.7);
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 14px;
+    transition: all 0.3s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.secondaryButton:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.06);
 }

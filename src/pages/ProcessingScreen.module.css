@@ -1,116 +1,161 @@
 /* ═══════════════════════════════════════════════
    ProcessingScreen – 分析过渡页
-   Terminal / Data Stream / Glitch
+   Glitch Art + Terminal + Mesh Gradient
    ═══════════════════════════════════════════════ */
 
 .container {
     width: 100%;
     height: 100vh;
     height: 100dvh;
-    background: #000;
+    background: #06060C;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #39FF14;
+    color: rgba(138, 43, 226, 0.8);
     font-family: var(--font-mono);
     overflow: hidden;
     position: relative;
 }
 
+/* ── Mesh gradient ── */
+.bgMesh {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 60% 50% at 30% 40%, rgba(138, 43, 226, 0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 70% 60%, rgba(160, 20, 50, 0.1) 0%, transparent 50%);
+    background-size: 200% 200%;
+    animation: meshPulse 8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes meshPulse {
+    0%, 100% { background-position: 0% 50%; opacity: 0.6; }
+    50% { background-position: 100% 50%; opacity: 1; }
+}
+
+/* ── Glitch Burst (CRT distortion) ── */
+.glitchBurst {
+    animation: glitchShake 0.15s ease-in-out;
+}
+
+@keyframes glitchShake {
+    0% { transform: translate(0); filter: none; }
+    20% { transform: translate(-2px, 1px); filter: hue-rotate(30deg); }
+    40% { transform: translate(3px, -1px); filter: hue-rotate(-20deg); }
+    60% { transform: translate(-1px, -2px); filter: hue-rotate(10deg); }
+    80% { transform: translate(2px, 1px); filter: none; }
+    100% { transform: translate(0); filter: none; }
+}
+
+/* ── Scan line ── */
 .scanLine {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 4px;
-    background: rgba(57, 255, 20, 0.5);
-    box-shadow: 0 0 10px #39FF14;
-    animation: scan 2s linear infinite;
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(138, 43, 226, 0.4) 20%,
+        rgba(138, 43, 226, 0.6) 50%,
+        rgba(138, 43, 226, 0.4) 80%,
+        transparent 100%);
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+    animation: scan 2.5s linear infinite;
     z-index: 10;
     pointer-events: none;
 }
 
+@keyframes scan {
+    0% { top: -5%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 105%; opacity: 0; }
+}
+
+/* ── Terminal output ── */
 .terminalOutput {
-    width: 90%;
-    max-width: 600px;
-    height: 60%;
+    width: 85%;
+    max-width: 500px;
+    height: 50%;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    font-size: 14px;
-    line-height: 1.6;
-    text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+    font-size: 13px;
+    line-height: 1.8;
+    text-shadow: 0 0 6px rgba(138, 43, 226, 0.4);
     margin-bottom: 40px;
+    z-index: 2;
 }
 
 .line {
     margin: 2px 0;
-    opacity: 0.8;
+    transition: opacity 0.3s;
 }
 
 .highlight {
     color: #fff;
     font-weight: bold;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
-.error {
-    color: #FF003C;
-    text-shadow: 0 0 5px rgba(255, 0, 60, 0.5);
+.cursor {
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    background: rgba(138, 43, 226, 0.8);
+    margin-left: 4px;
+    vertical-align: text-bottom;
+    animation: blink 0.7s step-end infinite;
 }
 
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* ── Progress bar ── */
 .progressContainer {
-    width: 80%;
-    max-width: 400px;
-    height: 20px;
-    border: 1px solid #39FF14;
+    width: 75%;
+    max-width: 350px;
+    height: 3px;
+    background: rgba(138, 43, 226, 0.1);
+    border-radius: 2px;
     position: relative;
     margin-top: 20px;
+    z-index: 2;
+    overflow: hidden;
 }
 
 .progressBar {
     height: 100%;
-    background: rgba(57, 255, 20, 0.2);
+    background: linear-gradient(90deg, rgba(138, 43, 226, 0.4), #8A2BE2);
     width: 0%;
     transition: width 0.1s linear;
+    border-radius: 2px;
     position: relative;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.4);
 }
 
-.progressBar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-    width: 4px;
-    background: #39FF14;
-    box-shadow: 0 0 10px #39FF14;
-}
-
+/* ── Percentage ── */
 .percentage {
-    margin-top: 10px;
-    font-size: 24px;
-    font-weight: bold;
-    letter-spacing: 2px;
+    margin-top: 16px;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: rgba(138, 43, 226, 0.9);
+    text-shadow: 0 0 15px rgba(138, 43, 226, 0.4);
+    z-index: 2;
 }
 
-@keyframes scan {
-    0% {
-        top: -10%;
-        opacity: 0;
-    }
-
-    10% {
-        opacity: 1;
-    }
-
-    90% {
-        opacity: 1;
-    }
-
-    100% {
-        top: 110%;
-        opacity: 0;
-    }
+.statusText {
+    margin-top: 12px;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: rgba(138, 43, 226, 0.3);
+    z-index: 2;
 }

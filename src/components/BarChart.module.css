@@ -1,0 +1,122 @@
+/* 横向柱状图容器 */
+.container {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* 每一行 */
+.barRow {
+    display: grid;
+    grid-template-columns: 100px 1fr 50px;
+    gap: 16px;
+    align-items: center;
+}
+
+/* 标签区域 */
+.labelArea {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.labelCN {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 1px;
+}
+
+.labelEN {
+    font-family: var(--font-mono, 'Courier New', monospace);
+    font-size: 9px;
+    color: rgba(138, 43, 226, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 进度条轨道 */
+.barTrack {
+    position: relative;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(138, 43, 226, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* 进度条填充 */
+.barFill {
+    position: relative;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        rgba(138, 43, 226, 0.4) 0%,
+        rgba(138, 43, 226, 0.6) 50%,
+        rgba(160, 20, 50, 0.5) 100%
+    );
+    border-radius: 3px;
+    transition: width 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow:
+        0 0 15px rgba(138, 43, 226, 0.3),
+        inset 0 0 15px rgba(138, 43, 226, 0.2);
+}
+
+/* 进度条发光效果 */
+.barGlow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.3) 100%
+    );
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+}
+
+/* 数值标签 */
+.valueLabel {
+    font-family: var(--font-mono, 'Courier New', monospace);
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(138, 43, 226, 0.9);
+    text-align: center;
+    text-shadow: 0 0 8px rgba(138, 43, 226, 0.5);
+}
+
+/* 移动端优化 */
+@media (max-width: 480px) {
+    .barRow {
+        grid-template-columns: 80px 1fr 40px;
+        gap: 12px;
+    }
+
+    .labelCN {
+        font-size: 13px;
+    }
+
+    .labelEN {
+        font-size: 8px;
+    }
+
+    .barTrack {
+        height: 24px;
+    }
+
+    .valueLabel {
+        font-size: 14px;
+    }
+}

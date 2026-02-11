@@ -1,17 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { calculateResult, type ScoreResult } from '../utils/scoring';
+import { generateAIShadowReading } from '../utils/geminiAPI';
+import { getFallbackReading } from '../data/fallbackReadings';
 import styles from './ProcessingScreen.module.css';
 
 const LOG_MESSAGES = [
-    'Initializing neural link...',
-    'Analyzing response patterns...',
-    'Detecting shadow archetypes...',
-    'Compiling psychological profile...',
-    'Cross-referencing Jungian database...',
-    'Measuring masking density...',
-    'Calibrating emotional suppression index...',
-    'Generating final report...',
+    '> Initializing neural link...',
+    '> Analyzing response patterns...',
+    '> Detecting shadow archetypes...',
+    '> Compiling psychological profile...',
+    '> Cross-referencing Jungian database...',
+    '> Measuring masking density...',
+    '> Calibrating emotional suppression index...',
+    '> Scanning subconscious patterns...',
+    '> Decrypting shadow signal...',
+    '> Generating final report...',
 ];
 
 export default function ProcessingScreen() {
@@ -19,6 +23,8 @@ export default function ProcessingScreen() {
     const navigate = useNavigate();
     const [progress, setProgress] = useState(0);
     const [logs, setLogs] = useState<string[]>([]);
+    const [glitchActive, setGlitchActive] = useState(false);
+    const logIndexRef = useRef(0);
 
     useEffect(() => {
         const answers = location.state?.answers;
@@ -29,7 +35,7 @@ export default function ProcessingScreen() {
 
         // Progress animation
         const startTime = Date.now();
-        const duration = 3500; // 3.5s total time
+        const duration = 4000;
 
         const interval = setInterval(() => {
             const elapsed = Date.now() - startTime;
@@ -37,39 +43,94 @@ export default function ProcessingScreen() {
 
             setProgress(newProgress);
 
-            // Add random logs
-            if (Math.random() > 0.85 && logs.length < LOG_MESSAGES.length) {
-                const msg = LOG_MESSAGES[Math.floor(Math.random() * LOG_MESSAGES.length)];
-                setLogs(prev => [...prev.slice(-5), `> ${msg}`]);
+            // Add logs sequentially
+            const logTarget = Math.floor((newProgress / 100) * LOG_MESSAGES.length);
+            if (logIndexRef.current < logTarget && logIndexRef.current < LOG_MESSAGES.length) {
+                const msg = LOG_MESSAGES[logIndexRef.current];
+                logIndexRef.current += 1;
+                setLogs(prev => [...prev.slice(-6), msg]);
+            }
+
+            // Random glitch bursts
+            if (Math.random() > 0.95) {
+                setGlitchActive(true);
+                setTimeout(() => setGlitchActive(false), 150);
             }
 
             if (newProgress >= 100) {
                 clearInterval(interval);
 
-                // Calculate and navigate
+                // Calculate result
                 const result: ScoreResult = calculateResult(answers);
-                setTimeout(() => {
-                    navigate('/result', { state: { result } });
-                }, 500);
+
+                // Generate AI shadow reading via Gemini API (8秒超时)
+                generateAIShadowReading(
+                    {
+                        nameCN: result.primaryArchetype.nameCN,
+                        nameEN: result.primaryArchetype.nameEN,
+                        mask: result.primaryArchetype.mask,
+                        shadow: result.primaryArchetype.shadow,
+                        trigger: result.primaryArchetype.trigger,
+                        temptation: result.primaryArchetype.temptation,
+                        curse: result.primaryArchetype.curse,
+                    },
+                    result.normalizedScores,
+                    8000  // 8秒超时
+                )
+                .then(aiReading => {
+                    if (aiReading) {
+                        // API调用成功，使用AI生成的解读
+                        result.shadowDiary = aiReading;
+                        console.log('✅ AI reading generated successfully');
+                    } else {
+                        // API调用失败或超时，使用预制备用数据
+                        result.shadowDiary = getFallbackReading(result.primaryArchetype.id);
+                        console.warn('⚠️ Using fallback reading');
+                    }
+                })
+                .catch(err => {
+                    // 异常情况，使用备用数据
+                    console.error('❌ AI reading error:', err);
+                    result.shadowDiary = getFallbackReading(result.primaryArchetype.id);
+                })
+                .finally(() => {
+                    // 无论成功或失败，600ms后跳转结果页
+                    setTimeout(() => {
+                        navigate('/result-v2', { state: { result } });
+                    }, 600);
+                });
             }
         }, 50);
 
         return () => clearInterval(interval);
-    }, [location.state, navigate, logs.length]);
+    }, [location.state, navigate]);
 
     return (
-        <div className={styles.container}>
-            <div className={styles.scanLine}></div>
+        <div className={`${styles.container} ${glitchActive ? styles.glitchBurst : ''}`}>
+            {/* Mesh gradient */}
+            <div className={styles.bgMesh} />
 
+            {/* Scan line */}
+            <div className={styles.scanLine} />
+
+            {/* Terminal output */}
             <div className={styles.terminalOutput}>
                 {logs.map((log, i) => (
-                    <div key={i} className={styles.line}>{log}</div>
+                    <div
+                        key={i}
+                        className={styles.line}
+                        style={{ opacity: 0.4 + (i / logs.length) * 0.6 }}
+                    >
+                        {log}
+                    </div>
                 ))}
                 <div className={styles.line}>
                     <span className={styles.highlight}>_PROCESSING...</span>
+                    <span className={styles.cursor} />
                 </div>
             </div>
 
+            {/* Progress bar */}
             <div className={styles.progressContainer}>
                 <div
                     className={styles.progressBar}
@@ -79,6 +140,10 @@ export default function ProcessingScreen() {
 
             <div className={styles.percentage}>
                 {Math.round(progress)}%
+            </div>
+
+            <div className={styles.statusText}>
+                SHADOW PROTOCOL ACTIVE
             </div>
         </div>
     );

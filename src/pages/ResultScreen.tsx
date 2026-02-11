@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { type ScoreResult } from '../utils/scoring';
 import RadarChart from '../components/RadarChart';
+import { POETIC_DIMENSIONS } from '../data/archetypes';
 import styles from './ResultScreen.module.css';
 
 export default function ResultScreen() {
@@ -29,25 +30,29 @@ export default function ResultScreen() {
     } = result;
 
     const handleShare = async () => {
-        const shareText = `我的阴影同步率是 ${shadowSyncRate}%。原型：${primaryArchetype.nameCN}。测测你的：[链接]`;
+        const shareText = `我的阴影同步率是 ${shadowSyncRate}%。原型：${primaryArchetype.nameCN}。测测你的：`;
+        const shareUrl = window.location.origin + '/quiz/shadow/quiz/';
         if (navigator.share) {
             try {
                 await navigator.share({
                     title: '暗影自我协议',
                     text: shareText,
-                    url: window.location.href,
+                    url: shareUrl,
                 });
             } catch (err) {
-                console.log('Share failed', err);
+                console.log('Share cancelled', err);
             }
         } else {
-            navigator.clipboard.writeText(shareText);
+            navigator.clipboard.writeText(shareText + shareUrl);
             alert('结果已复制到剪贴板');
         }
     };
 
     return (
         <div className={styles.container}>
+            {/* Mesh gradient */}
+            <div className={styles.bgMesh} />
+
             {/* 1. Sync Rate Hero */}
             <div className={styles.heroSection}>
                 <div className={styles.syncRateLabel}>SHADOW SYNC RATE</div>
@@ -70,12 +75,18 @@ export default function ResultScreen() {
 
                 <h3 className={styles.sectionTitle}>触发条件</h3>
                 <p className={styles.descriptionText}>{primaryArchetype.trigger}</p>
+
+                <h3 className={styles.sectionTitle}>阴影的诱惑</h3>
+                <p className={styles.descriptionText}>{primaryArchetype.temptation}</p>
+
+                <h3 className={styles.sectionTitle}>阴影的诅咒</h3>
+                <p className={styles.descriptionText}>{primaryArchetype.curse}</p>
             </div>
 
             {/* 3. Secondary Archetype (Double Shadow) */}
             {secondaryArchetype && (
-                <div className={styles.archetypeCard} style={{ borderColor: '#FF003C' }}>
-                    <h2 className={styles.sectionTitle} style={{ color: '#FF003C' }}>⚠️ 检测到叠影态</h2>
+                <div className={styles.warningCard}>
+                    <div className={styles.warningTitle}>检测到叠影态</div>
                     <h1 className={styles.archetypeNameCN}>{secondaryArchetype.nameCN}</h1>
                     <span className={styles.archetypeNameEN}>{secondaryArchetype.nameEN}</span>
                     <p className={styles.descriptionText}>
@@ -86,21 +97,36 @@ export default function ResultScreen() {
 
             {/* 4. Special States */}
             {isChaos && (
-                <div className={styles.archetypeCard}>
-                    <h2 className={styles.sectionTitle}>⚠️ 混沌态确认</h2>
+                <div className={styles.warningCard}>
+                    <div className={styles.warningTitle}>混沌态确认</div>
                     <p className={styles.descriptionText}>
-                        你的六维特征高度均匀，系统无法捕捉主导倾向。你可能是最接近“真实人性”的人，也可能是最迷失的人。
+                        你的六维特征高度均匀，系统无法捕捉主导倾向。你可能是最接近"真实人性"的人，也可能是最迷失的人。
                     </p>
                 </div>
             )}
 
-            {/* Barrier State */}
             {isBarrier && (
-                <div className={styles.archetypeCard}>
-                    <h2 className={styles.sectionTitle}>⚠️ 阴影屏障</h2>
+                <div className={styles.warningCard}>
+                    <div className={styles.warningTitle}>阴影屏障</div>
                     <p className={styles.descriptionText}>
                         你的面具太厚了，系统无法穿透。建议放下防御重测。
                     </p>
+                </div>
+            )}
+
+            {/* 4.5. Shadow Diary (AI Generated) */}
+            {result.shadowDiary && (
+                <div className={styles.shadowDiary}>
+                    <div className={styles.diaryHeader}>
+                        <span className={styles.diaryIcon}>◈</span>
+                        阴影日记 · Shadow Diary
+                    </div>
+                    <div className={styles.diaryContent}>
+                        {result.shadowDiary}
+                    </div>
+                    <div className={styles.diaryFooter}>
+                        ▸ AI Generated · Based on your shadow pattern
+                    </div>
                 </div>
             )}
 
@@ -113,6 +139,9 @@ export default function ResultScreen() {
             <div className={styles.actionArea}>
                 <button className={styles.primaryButton} onClick={handleShare}>
                     分享结果
+                </button>
+                <button className={styles.secondaryButton} onClick={() => navigate('/result-v2', { state: { result } })}>
+                    体验V2版本 🎬
                 </button>
                 <button className={styles.secondaryButton} onClick={() => navigate('/')}>
                     重新测试

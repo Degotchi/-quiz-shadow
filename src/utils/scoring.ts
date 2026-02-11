@@ -15,6 +15,7 @@ export interface ScoreResult {
     isChaos: boolean;   // 混沌态
     isBarrier: boolean; // 阴影屏障
     shadowSyncRate: number; // 阴影同步率 %
+    shadowDiary?: string; // AI生成的阴影日记
 }
 
 /**

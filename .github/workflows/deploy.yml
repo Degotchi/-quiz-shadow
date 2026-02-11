@@ -24,27 +24,53 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # 4. 构建项目
-      - name: Build Project
+      # 4. 构建前端项目
+      - name: Build Frontend
         run: CI=false npm run build
+        env:
+          VITE_BASE_PATH: /quiz/shadow/quiz/
 
-      # 5. 部署 dist 到 VPS
-      - name: Deploy to VPS
+      # 5. 部署完整项目到 VPS
+      - name: Deploy to VPS via SSH
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
-          source: "dist/*"
+          port: 22
+          source: "dist/,server/,.env.production,package.json,package-lock.json,ecosystem.config.cjs"
           target: "/root/degotchi/shadow_app"
-          strip_components: 1
+          strip_components: 0
+          rm: false
 
-      # 6. 重新加载 Nginx 容器
-      - name: Reload Nginx
+      # 6. 安装后端依赖并重启服务
+      - name: Deploy Backend & Restart Services
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
           script: |
-            cd /root/degotchi && docker compose exec -T nginx nginx -s reload
+            cd /root/degotchi/shadow_app
+            
+            # 安装后端依赖
+            npm install --production
+            
+            # 重启 PM2 服务
+            pm2 restart shadow-backend || pm2 start ecosystem.config.cjs
+            
+            # 保存 PM2 配置
+            pm2 save
+            
+            # 重新加载 Nginx (如果使用 Docker)
+            if [ -f /root/degotchi/docker-compose.yml ]; then
+              cd /root/degotchi && docker compose exec -T nginx nginx -s reload
+            else
+              # 如果直接安装的 Nginx
+              nginx -t && systemctl reload nginx
+            fi
+            
+            # 显示服务状态
+            pm2 list
+            echo "✅ Deployment completed successfully!"

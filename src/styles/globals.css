@@ -1,14 +1,36 @@
+/* ═══════════════════════════════════════════════
+   Global Styles — 暗影自我协议
+   Mesh Gradient + Glassmorphism + Glitch
+   ═══════════════════════════════════════════════ */
+
 :root {
-  --void-black: #0A0A0F;
+  /* ── Core Palette ── */
+  --void-black: #06060C;
+  --deep-purple: #1a0a2e;
+  --dark-crimson: #2a0a1a;
   --toxic-green: #39FF14;
   --warning-yellow: #FFFF00;
   --cyber-purple: #8A2BE2;
+  --cyber-purple-dim: rgba(138, 43, 226, 0.6);
   --danger-red: #FF003C;
   --cold-gray: #1A1A2E;
   --cold-gray-light: #2A2A3E;
   --cold-blue: #00D4FF;
+  --ember-orange: #FF6B35;
+
+  /* ── Glassmorphism ── */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-bg-strong: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.15);
+  --glass-blur: 20px;
+
+  /* ── Typography ── */
   --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Menlo', 'Consolas', monospace;
   --font-sans: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Segoe UI', sans-serif;
+
+  /* ── Breathing rhythm ── */
+  --breath-duration: 4s;
 }
 
 *, *::before, *::after {
@@ -34,20 +56,56 @@ body {
 }
 
 ::selection {
-  background: rgba(57, 255, 20, 0.3);
-  color: var(--toxic-green);
+  background: rgba(138, 43, 226, 0.4);
+  color: #fff;
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 3px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--void-black);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(57, 255, 20, 0.2);
+  background: rgba(138, 43, 226, 0.3);
   border-radius: 2px;
 }
 
-a { color: var(--toxic-green); text-decoration: none; }
+a { color: var(--cyber-purple); text-decoration: none; }
 button { cursor: pointer; font-family: inherit; }
+
+/* ── Breathing Border Glow (reusable) ── */
+@keyframes breathGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 15px rgba(138, 43, 226, 0.08),
+      inset 0 0 15px rgba(138, 43, 226, 0.03);
+  }
+  50% {
+    box-shadow:
+      0 0 25px rgba(138, 43, 226, 0.15),
+      inset 0 0 25px rgba(138, 43, 226, 0.06);
+  }
+}
+
+/* ── Mesh Gradient Animation ── */
+@keyframes meshFlow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+}
+
+/* ── Subtle float ── */
+@keyframes subtleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
