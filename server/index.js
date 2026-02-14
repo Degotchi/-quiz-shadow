@@ -29,6 +29,45 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// 硬编码的有效CDKEY列表
+const VALID_CDKEYS = [
+    'A1B2-C3D4-E5F6-G7H8',
+    'TEST-1234-5678-90AB',
+    'DEMO-XYZZ-YXWW-VUTS'
+];
+
+// CDKEY验证端点
+app.post('/api/verify-cdkey', (req, res) => {
+    const { cdkey } = req.body;
+
+    // 检查CDKEY是否提供
+    if (!cdkey) {
+        console.log('CDKEY verification failed: No CDKEY provided');
+        return res.status(400).json({
+            valid: false,
+            message: 'CDKEY is required'
+        });
+    }
+
+    // 验证CDKEY（忽略大小写）
+    const normalizedCdkey = cdkey.toUpperCase();
+    const isValid = VALID_CDKEYS.some(validKey => validKey.toUpperCase() === normalizedCdkey);
+
+    if (isValid) {
+        console.log(`CDKEY verified: ${normalizedCdkey}`);
+        return res.json({
+            valid: true,
+            message: 'CDKEY is valid'
+        });
+    } else {
+        console.log(`CDKEY verification failed: Invalid CDKEY - ${normalizedCdkey}`);
+        return res.json({
+            valid: false,
+            message: 'CDKEY is invalid'
+        });
+    }
+});
+
 // AI 解读生成端点
 app.post('/api/generate-shadow-reading', async (req, res) => {
     try {
