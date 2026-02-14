@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import styles from './StartScreen.module.css';
 import CodeInputModal from '../components/CodeInputModal';
@@ -15,8 +14,6 @@ const TYPE_SPEED = 45;     // ms per character
 const LINE_PAUSE = 600;    // pause between lines
 
 export default function StartScreen() {
-  const navigate = useNavigate();
-
   // ── CDKEY Modal state ──
   const [showCodeModal, setShowCodeModal] = useState(false);
 
