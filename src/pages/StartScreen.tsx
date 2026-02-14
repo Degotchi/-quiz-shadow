@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import styles from './StartScreen.module.css';
+import CodeInputModal from '../components/CodeInputModal';
 
 const TERMINAL_MESSAGES = [
   '> 正在扫描神经链路...',
@@ -14,6 +16,9 @@ const LINE_PAUSE = 600;    // pause between lines
 
 export default function StartScreen() {
   const navigate = useNavigate();
+
+  // ── CDKEY Modal state ──
+  const [showCodeModal, setShowCodeModal] = useState(false);
 
   // ── Terminal typewriter state ──
   const [lineIndex, setLineIndex] = useState(0);
@@ -50,7 +55,7 @@ export default function StartScreen() {
     }
   }, [lineIndex, charIndex]);
 
-  // ── CTA shake + navigate ──
+  // ── CTA shake + modal ──
   const [shaking, setShaking] = useState(false);
 
   const handleStart = useCallback(() => {
@@ -58,9 +63,9 @@ export default function StartScreen() {
     setShaking(true);
     setTimeout(() => {
       setShaking(false);
-      navigate('/quiz');
+      setShowCodeModal(true);
     }, 200);
-  }, [shaking, navigate]);
+  }, [shaking]);
 
   return (
     <div className={styles.container}>
@@ -126,6 +131,16 @@ export default function StartScreen() {
           SYSTEM v2.1.7 | NEURAL_SCAN_PROTOCOL
         </div>
       </div>
+
+      {/* CDKEY Modal */}
+      <AnimatePresence>
+        {showCodeModal && (
+          <CodeInputModal
+            isOpen={showCodeModal}
+            onClose={() => setShowCodeModal(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
